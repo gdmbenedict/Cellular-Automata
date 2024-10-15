@@ -26,31 +26,46 @@ public class MapGenerator : MonoBehaviour
         GenerateMap();
     }
 
+    void Update()
+    {
+        if (Input.GetMouseButtonDown(0))
+        {
+            Debug.Log("Generating new map");
+            GenerateMap();
+        }
+    }
+
     //function useed to generate a map layout
     private void GenerateMap()
     {
         map = new int[width, height];
         RandomFillMap();
 
-        /*
+        
         for (int i=0; i<smoothingIterations; i++)
         {
             SmoothMap();
         }
-        */
+        
     }
 
     //function that randomly fills the map grid
     void RandomFillMap()
     {
+        System.Random prng;
+
         //check for seed for creation
         if (string.IsNullOrEmpty(seed))
         {
-            seed = Time.time.ToString();
+            prng = new System.Random();
+        }
+        else
+        {
+            //seeding the pseudo-random number generator
+            prng = new System.Random(seed.GetHashCode());
         }
 
-        //seeding the pseudo-random number generator
-        System.Random prng = new System.Random(seed.GetHashCode());
+        
 
         //loop populating the map
         for (int x=0; x<width; x++)
@@ -74,6 +89,9 @@ public class MapGenerator : MonoBehaviour
     // Function for smoothing map output 
     private void SmoothMap()
     {
+        //getting copy to work on
+        int[,] map = this.map;
+
         //loop through the map
         for (int x = 0; x < width; x++)
         {
@@ -92,6 +110,9 @@ public class MapGenerator : MonoBehaviour
                 }
             }
         }
+
+        //updating original
+        this.map = map;
     }
 
     // Function for getting surrounding conditions
@@ -130,6 +151,8 @@ public class MapGenerator : MonoBehaviour
         //check if map is instantiated
         if (map != null)
         {
+            //Debug.Log("Draw Gizmos being called");
+
             //loop drawing the map
             for (int x = 0; x < width; x++)
             {
