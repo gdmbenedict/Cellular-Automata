@@ -13,16 +13,21 @@ public class MapGenerator : MonoBehaviour
     [Range(0, 100)] public int randomFillChance; //chance a point on the grid will be filled
     public string seed; //seed to give the map a desired generation
 
-    [Header("Smoothing varaibles")]
+    [Header("Smoothing Variables")]
 
     [Range(1, 10)] public int smoothingIterations; //number of iterations through smoothing loop
     [Range(1,8)]public int smoothingRequirement; //number of surrounding similar tiles to change tile type
 
+    [Header("Display Variables")]
+    public float squareSize = 1f;
+    
     private int[,] map;
+    private MeshGenerator meshGen;
 
     //function called on first frame
     void Start()
     {
+        meshGen = GetComponent<MeshGenerator>();
         GenerateMap();
     }
 
@@ -41,12 +46,13 @@ public class MapGenerator : MonoBehaviour
         map = new int[width, height];
         RandomFillMap();
 
-        
+        //smoothing loop
         for (int i=0; i<smoothingIterations; i++)
         {
             SmoothMap();
         }
-        
+
+        meshGen.GenerateMesh(map, squareSize);
     }
 
     //function that randomly fills the map grid
@@ -148,6 +154,7 @@ public class MapGenerator : MonoBehaviour
     //Function that allows for 2D map visualization through Unity's Gizmos system
     void OnDrawGizmos()
     {
+        /*
         //check if map is instantiated
         if (map != null)
         {
@@ -164,6 +171,7 @@ public class MapGenerator : MonoBehaviour
                     Gizmos.DrawCube(pos,Vector3.one);
                 }
             }
-        }   
+        } 
+        */
     }
 }
